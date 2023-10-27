@@ -1,5 +1,7 @@
 package com.example.SprintMaster.model;
 
+import java.sql.Timestamp;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -10,22 +12,31 @@ import lombok.Data;
 
 @Entity
 @Data
-public class Employee {
-	
+public class Jira {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int id;
 	
-	@Column(name = "name")
-	private String name;
+	@Column(name="jira_id")
+	private int jiraId;
 	
-	@Column(name = "module")
+	@Column
+	private String priority;
+	
+	@Column
+	private String status;
+	
+	@Column
 	private String module;
 	
-	@Column(name = "password")
-	private String password;
+	@Column(name="dev_id")
+	private int empId;
 	
-	@Column(name = "role")
-	private char role;
+	@Column
+	private String sprint;
+	
+	@Column(name="created_time")
+	private Timestamp createDate;
 	
 }
