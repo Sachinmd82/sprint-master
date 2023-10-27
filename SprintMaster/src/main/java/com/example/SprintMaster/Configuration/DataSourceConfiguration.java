@@ -48,7 +48,7 @@ public class DataSourceConfiguration {
 	@Bean(name = {"sessionFactory","entityManagerFactory"})
 	public SessionFactory getSessionFactory(DataSource dataSource) {
 		LocalSessionFactoryBuilder sessionBuilder = new LocalSessionFactoryBuilder(dataSource);
-		sessionBuilder.scanPackages("com.property.propertyservice","com.property.*");
+		sessionBuilder.scanPackages("com.example.SprintMaster","com.example.*");
 		return sessionBuilder.buildSessionFactory();
 	}
 
