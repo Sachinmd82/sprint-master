@@ -33,3 +33,6 @@ CREATE TABLE `employee` (
 );
 
 Alter table employee modify module varchar(10);
+
+
+alter table sprint_master.jira modify jira_id varchar(50) default NULL;
