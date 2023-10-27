@@ -1,4 +1,4 @@
-use sprint_master;
+create schema sprint_master;
 
 CREATE TABLE `logger` (
   `id` int NOT NULL AUTO_INCREMENT,
