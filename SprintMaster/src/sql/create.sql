@@ -31,3 +31,5 @@ CREATE TABLE `employee` (
   `role` char(1) DEFAULT NULL,
   PRIMARY KEY (`id`)
 );
+
+Alter table employee modify module varchar(10);
