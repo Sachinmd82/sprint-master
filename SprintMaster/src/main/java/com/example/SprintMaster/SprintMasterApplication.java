@@ -8,6 +8,7 @@ public class SprintMasterApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(SprintMasterApplication.class, args);
+		System.out.println("sdffvdfdfvdvdv");
 	}
 
 }
