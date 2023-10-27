@@ -4,9 +4,11 @@ import javax.sql.DataSource;
 
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBuilder;
+import org.springframework.web.client.RestTemplate;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
@@ -51,5 +53,10 @@ public class DataSourceConfiguration {
 		sessionBuilder.scanPackages("com.example.SprintMaster","com.example.*");
 		return sessionBuilder.buildSessionFactory();
 	}
+	
+	@Bean
+    public RestTemplate HttpsRestClient(RestTemplateBuilder restTemplateBuilder) {
+        return restTemplateBuilder.build();
+    }
 
 }
