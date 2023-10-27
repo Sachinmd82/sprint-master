@@ -20,7 +20,7 @@ public class SpringUtility {
         return Timestamp.valueOf(formatted);
 	}
 
-	public static final String ASSIGNED			="Assigned";
+	public static final String IN_PROGRESS		="IN_PROGRESS";
 	public static final String BREAK_START		="Break-Start";
 	public static final String BREAK_END 		="Break-End";
 	public static final String DONE 			="Done";
