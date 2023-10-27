@@ -19,7 +19,7 @@ public class Jira {
 	private int id;
 	
 	@Column(name="jira_id")
-	private int jiraId;
+	private String jiraId;
 	
 	@Column
 	private String priority;
