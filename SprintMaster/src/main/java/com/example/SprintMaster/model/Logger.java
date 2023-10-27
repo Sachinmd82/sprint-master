@@ -22,7 +22,7 @@ public class Logger {
 	private int empId;
 	
 	@Column(name = "jira_id")
-	private int jiraId;
+	private String jiraId;
 	
 	@Column(name = "activity_name")
 	private String activityName;
