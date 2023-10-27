@@ -14,6 +14,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import com.example.SprintMaster.model.JiraDataModel;
@@ -43,7 +44,7 @@ public class JiraService {
 				HttpHeaders headers = new HttpHeaders();
 				headers.set("Content-Type", "application/json");
 				headers.setBasicAuth("darshanneo07@gmail.com",
-						"ATATT3xFfGF0T8_HjmKqovpDDIbiuMKkk0PtAbffokRvhoJvCvt-zJHZGoVu7ONKrkWAkHtn3ViX3J3sJn1WzzOWm206aCT13edIkAIzDQpZNOlYF2M5DCgbPed58ns9VLKB81mw7NCrLeKYUzP3y12EOK6L8mYM9haI_uNu5-S5KPIM5m-hLWM=72A57378");
+						"ATATT3xFfGF0QLsKyvng1uFfH7hFCgKR09Y9kX3GoLK4Edx6cAuyNyfbLoFBH6zvjvEQU_XNThDysn9sZ1jKrdDCNNR1r_cDkaf_Sv7SzOh9yqXVWTDz7Sorf9j5YXDFnqv7O_HJBganAMnGhymnGd8jzfKYnK5yD52-7rRID3ixd2k8T3uY170=28985837");
 				HttpEntity<String> entity = new HttpEntity<>("", headers);
 
 				String responseStr = restTemplate.exchange(urlStr, HttpMethod.GET, entity, String.class).getBody();
@@ -189,6 +190,34 @@ public class JiraService {
 			return true;
 		}
 		return false;
+	}
+
+	public ResponseEntity<?> updateStoryPoint(String jiraId, int storyPoint) {
+		if (storyPoint > 0 && isNotNullAndNotEmpty(jiraId)) {
+			JSONObject outerObj = new JSONObject();
+
+			JSONObject innerObj = new JSONObject();
+			innerObj.put("customfield_10031", storyPoint);
+
+			outerObj.put("fields", innerObj);
+
+			String urlStr = "https://sprintmaster007.atlassian.net/rest/api/3/issue/" + jiraId;
+
+			HttpHeaders headers = new HttpHeaders();
+
+			headers.set("Content-Type", "application/json");
+			headers.setBasicAuth("darshanneo07@gmail.com",
+					"ATATT3xFfGF0QLsKyvng1uFfH7hFCgKR09Y9kX3GoLK4Edx6cAuyNyfbLoFBH6zvjvEQU_XNThDysn9sZ1jKrdDCNNR1r_cDkaf_Sv7SzOh9yqXVWTDz7Sorf9j5YXDFnqv7O_HJBganAMnGhymnGd8jzfKYnK5yD52-7rRID3ixd2k8T3uY170=28985837");
+			HttpEntity<JSONObject> entity = new HttpEntity<>(outerObj, headers);
+
+			try {
+				String responseStr = restTemplate.exchange(urlStr, HttpMethod.PUT, entity, String.class).getBody();
+			} catch (RestClientException e) {
+				e.printStackTrace();
+			}
+
+		}
+		return new ResponseEntity<>("Success", HttpStatus.CREATED);
 	}
 
 }
