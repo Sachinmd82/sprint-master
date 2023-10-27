@@ -25,7 +25,7 @@ public class LoggerService {
 				Logger start = null,end = null;
 				Logger breakStartTime = null;
 				for(Logger logger:list) {
-					if(logger.getActivityName().equals(SpringUtility.ASSIGNED)) {
+					if(logger.getActivityName().equals(SpringUtility.IN_PROGRESS)) {
 						start = logger;
 					}else if(logger.getActivityName().equals(SpringUtility.DONE)) {
 						end = logger;
