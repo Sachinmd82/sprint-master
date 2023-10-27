@@ -1,5 +1,12 @@
 package com.example.SprintMaster.model;
 
-public class Employee {
+import javax.persistence.Entity;
 
+@Entity
+public class Employee {
+	
+	private int id;
+	
+	private String name;
+	
 }
