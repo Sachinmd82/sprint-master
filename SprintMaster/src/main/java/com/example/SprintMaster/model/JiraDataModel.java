@@ -15,5 +15,8 @@ public class JiraDataModel {
 	private Timestamp dueDate;
 	private String assigneeAccId;
 	private String employeeName;
+	private Timestamp startDate;
+	private Timestamp endDate;
+
 
 }
