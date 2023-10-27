@@ -8,6 +8,6 @@ import com.example.SprintMaster.model.Employee;
 @Repository
 public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
 
-//	Employee findByUsername(String username);
+	Employee findByName(String username);
 
 }
