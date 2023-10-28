@@ -39,4 +39,10 @@ public class Jira {
 	@Column(name="created_time")
 	private Timestamp createDate;
 	
+	@Column(name="start_time")
+	private Timestamp startTime;
+	
+	@Column(name="end_time")
+	private Timestamp endTime;
+	
 }
