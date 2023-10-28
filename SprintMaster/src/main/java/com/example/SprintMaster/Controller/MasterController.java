@@ -31,7 +31,7 @@ public class MasterController {
 	}
 	
 	@GetMapping("/get-statuswise/{status}")
-	public ResponseEntity<?>  getForStatus(@RequestHeader("Authorization") String authorizationHeader, @PathVariable("status") char status){
+	public ResponseEntity<?>  getForStatus(@RequestHeader("Authorization") String authorizationHeader, @PathVariable("status") String status){
 		return masterService.getForStatus(authorizationHeader, status);
 	}
 
