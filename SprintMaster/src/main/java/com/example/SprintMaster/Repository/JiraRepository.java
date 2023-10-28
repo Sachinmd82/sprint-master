@@ -14,4 +14,6 @@ public interface JiraRepository extends JpaRepository<Jira, Integer> {
 
 	List<Jira> findByEmpId(int empId);
 
+	List<Jira> findByEmpIdAndStatus(int empId, String status);
+
 }
