@@ -33,9 +33,9 @@ public class SprintMasterApplication implements CommandLineRunner {
 			jira.setModule("module"+(i%3));
 			jira.setSprint("sprint_"+((i+1)%3));
 			jira.setEmpId(i%2);
-			if(i%2 == 0) {
+			if(i%3 == 1) {
 				jira.setStatus("Pending");
-			}else if(i%3==0) {
+			}else if(i%3==2) {
 				jira.setStatus("InProgress");
 			}else {
 				jira.setStatus("Complete");
