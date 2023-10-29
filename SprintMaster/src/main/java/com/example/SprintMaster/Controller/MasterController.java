@@ -45,4 +45,9 @@ public class MasterController {
 	public ResponseEntity<?> getAdminWiseForStatus(@PathVariable("status") String status){
 		return  masterService.getAdminWiseForStatus(status);
 	}
+	
+	@GetMapping("admin/get-all-emp-efficiency")
+	public ResponseEntity<?> getAllEmpData(){
+		return  masterService.getAllEmpDataForAdmin();
+	}
 }
