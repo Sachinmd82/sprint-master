@@ -38,7 +38,7 @@ public class JiraService {
 	@Autowired
 	private CacheService cacheService;
 
-	public ResponseEntity<?> getAllIssueBySprintName(String sprintName) {
+	public ResponseEntity<?> getAllIssueBySprintName(String sprintName, String apiToken) {
 
 		ArrayList<JiraDataModel> dataList = new ArrayList<>();
 
@@ -52,8 +52,7 @@ public class JiraService {
 
 				HttpHeaders headers = new HttpHeaders();
 				headers.set("Content-Type", "application/json");
-				headers.setBasicAuth("darshanneo07@gmail.com",
-						"ATATT3xFfGF0n1mHqa-E6uHNTLsG0mAJYs7h1AqYsC8iW7-BXR53T5wSl3zQQ3Pu0AVL4Gaj54FAfbpEu5Z5RAxDX-UZguH5wbTTyLdK6C_QcCOxOnAk_Zf2h0nLy5qPmv92WMH2Rk1_3-w6CSA39bulpJXAm63v3ElWBwYYUSyYN0LFalvfAyw=AFCD39E6");
+				headers.setBasicAuth("darshanneo07@gmail.com",apiToken);
 				HttpEntity<String> entity = new HttpEntity<>("", headers);
 
 				String responseStr = restTemplate.exchange(urlStr, HttpMethod.GET, entity, String.class).getBody();

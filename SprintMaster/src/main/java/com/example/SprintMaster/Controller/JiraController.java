@@ -16,8 +16,8 @@ public class JiraController {
 	private JiraService jiraService;
 	
 	@GetMapping("/get-all-issue-by-sprint-name")
-	private ResponseEntity<?> getAllIssueBySprintname(@RequestParam String sprintName){
-		return jiraService.getAllIssueBySprintName(sprintName);
+	private ResponseEntity<?> getAllIssueBySprintname(@RequestParam String sprintName, @RequestParam String apiToken){
+		return jiraService.getAllIssueBySprintName(sprintName, apiToken);
 	}
 	
 	@PutMapping("/update-story-point")
