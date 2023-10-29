@@ -12,7 +12,6 @@ import javax.persistence.Table;
 import lombok.Data;
 
 @Entity
-@Table(name = "jira")
 @Data
 @Table(name = "jira")
 public class Jira {
