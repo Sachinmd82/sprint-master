@@ -52,3 +52,5 @@ ALTER TABLE sprint_master.employee MODIFY NAME VARCHAR(50) DEFAULT NULL;
 ALTER TABLE sprint_master.employee MODIFY module VARCHAR(50) DEFAULT NULL;
 
 alter table sprint_master.jira ADD end_time timestamp , ADD start_time timestamp;
+
+Alter table sprint_master add due_date timestamp default null;
