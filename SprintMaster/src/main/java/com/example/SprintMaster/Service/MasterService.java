@@ -1,9 +1,11 @@
 package com.example.SprintMaster.Service;
 
 import java.sql.Timestamp;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -139,4 +141,40 @@ public class MasterService {
 		}
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
+	
+	public ResponseEntity<?> getAllEmpDataForAdmin(){
+		List<Jira> jiras = jiraRepository.findAll();
+		Map<Integer,Field> result = new HashMap<>();
+		for (Jira jira : jiras) {
+			Timestamp st = null;
+			Timestamp ed = null;
+			long duration = 0;
+			List<Logger> loggers = loggerRepository.findByJiraId(jira.getJiraId());
+			for (Logger logger : loggers) {
+				if (logger.getActivityName().equals("Pause")) {
+					st = logger.getTime();
+				} else if (logger.getActivityName().equals("Start") && st != null) {
+					ed = logger.getTime();
+				}
+				if (st != null && ed != null) {
+					duration += ed.getTime() - st.getTime();
+					st = null;
+					ed = null;
+				}
+			}
+			
+			Field field = result.get(jira.getEmpId());
+			if(field == null) {
+				field = new Field();
+				result.put(jira.getEmpId(), field);
+			}
+			field.setBreakTaken(duration + field.getBreakTaken());
+			Timestamp jiraSt = jira.getStartTime();
+			Timestamp jiraEt = jira.getEndTime() != null ? jira.getEndTime() : SpringUtility.getCurrentTimestamp();
+			long diff = jiraSt != null && jiraEt != null ? jiraEt.getTime() - jiraSt.getTime() : 0;
+			field.setWorked(diff + field.getWorked());
+		}
+		return new ResponseEntity<>(result, HttpStatus.OK);
+	}
+	
 }
