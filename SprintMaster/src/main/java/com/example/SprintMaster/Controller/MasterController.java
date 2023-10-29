@@ -31,8 +31,17 @@ public class MasterController {
 	}
 	
 	@GetMapping("/get-statuswise/{status}")
-	public ResponseEntity<?>  getForStatus(@RequestHeader("Authorization") String authorizationHeader, @PathVariable("status") char status){
+	public ResponseEntity<?>  getForStatus(@RequestHeader("Authorization") String authorizationHeader, @PathVariable("status") String status){
 		return masterService.getForStatus(authorizationHeader, status);
 	}
 
+	@GetMapping("admin/get-statuswise-count")
+	public ResponseEntity<?> getAdminStatusWiseCount(){
+		return  masterService.getAdminStatusWiseCount();
+	}
+	
+	@GetMapping("admin/get-statuswise-count/{status}")
+	public ResponseEntity<?> getAdminWiseForStatus(@PathVariable("status") String status){
+		return  masterService.getAdminWiseForStatus(status);
+	}
 }

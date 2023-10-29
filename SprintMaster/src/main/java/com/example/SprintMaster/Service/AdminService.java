@@ -4,6 +4,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +20,7 @@ public class AdminService {
 	@Autowired
 	EmployeeRepository employeeRepository;
 	
+	@PostConstruct
 	public void loadAdminDataIntoCache() {
 		List<Employee> list = employeeRepository.findAll();
 		if (list != null && list.size() > 0) {

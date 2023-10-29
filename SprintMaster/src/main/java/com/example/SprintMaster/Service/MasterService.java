@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.example.SprintMaster.Dto.Field;
 import com.example.SprintMaster.Dto.LogDto;
 import com.example.SprintMaster.Repository.EmployeeRepository;
 import com.example.SprintMaster.Repository.JiraRepository;
@@ -71,11 +72,67 @@ public class MasterService {
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 
-	public ResponseEntity<?> getForStatus(String authorizationHeader, char status) {
+	public ResponseEntity<?> getForStatus(String authorizationHeader, String status) {
+		Map<String, Field> result = new LinkedHashMap<>();
 		String name = adminService.getUserName(authorizationHeader);
 		Employee employee = employeeRepository.findByName(name);
 		int empId = employee.getId();
-		return null;
+		List<Jira> jiras = jiraRepository.findByEmpIdAndStatus(empId,status);
+		for(Jira jira:jiras) {
+			Timestamp st = null;
+			Timestamp ed = null;
+			long duration = 0;
+			List<Logger>loggers = loggerRepository.findByJiraId(jira.getJiraId());
+			for(Logger logger : loggers) {
+				if(logger.getActivityName().equals("Pause")) {
+					st =logger.getTime();
+				} else if(logger.getActivityName().equals("start")&& st!=null) {
+					ed=logger.getTime();
+				}
+				if(st!=null && ed!=null) {
+					duration+=ed.getTime()-st.getTime();
+					st = null;
+					ed = null;
+				}
+			}
+			Field field = new Field();
+			field.setBreakTaken(duration);
+			Timestamp jiraSt = jira.getStartTime();
+			Timestamp jiraEt = jira.getEndTime() != null ? jira.getEndTime() : SpringUtility.getCurrentTimestamp();
+			long diff = jiraEt.getTime() - jiraSt.getTime();
+			field.setWorked(diff);
+			result.put(jira.getJiraId(), field);
+		}
+		return new ResponseEntity<>(result,HttpStatus.OK);
 	}
 
+	public ResponseEntity<Map<String, Integer>> getAdminStatusWiseCount() {
+		List<Jira> jiras = jiraRepository.findAll();
+		int pending = 0;
+		int inProgress = 0;
+		int complete = 0;
+		for(Jira jira : jiras) {
+			if(jira.getStatus().equals("Pending")) {
+				pending += 1;
+			} else if (jira.getStatus().equals("InProgress")) {
+				inProgress += 1;
+			} else {
+				complete += 1;
+			}
+		}
+		
+		Map<String, Integer> result = new LinkedHashMap<String, Integer>();
+		result.put("Pending", pending);
+		result.put("InProgress", inProgress);
+		result.put("Complete", complete);
+		return new ResponseEntity<>(result, HttpStatus.OK);
+	}
+
+	public ResponseEntity<?> getAdminWiseForStatus(String status) {
+		List<Jira> jiras = jiraRepository.findByStatus(status);
+		if(jiras!=null && jiras.size()>0) {
+			return new ResponseEntity<List<Jira>>(jiras,HttpStatus.OK);
+		}
+		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+	}
 }

@@ -47,3 +47,8 @@ alter table sprint_master.jira modify sprint varchar(150) default NULL,
 							   modify status varchar(150) default NULL,
                                modify module varchar(150) default NULL,                               
                                modify priority varchar(150) default NULL;
+                               
+ALTER TABLE sprint_master.employee MODIFY NAME VARCHAR(50) DEFAULT NULL;
+ALTER TABLE sprint_master.employee MODIFY module VARCHAR(50) DEFAULT NULL;
+
+alter table sprint_master.jira ADD end_time timestamp , ADD start_time timestamp;
