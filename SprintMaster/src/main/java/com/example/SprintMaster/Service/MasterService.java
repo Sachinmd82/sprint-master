@@ -44,6 +44,7 @@ public class MasterService {
 			logger.setJiraId(jira.getJiraId());
 			Timestamp timestamp = SpringUtility.getCurrentTimestamp();
 			logger.setTime(timestamp);
+			logger.setType('C');
 			loggerRepository.save(logger);
 			return logger;
 		}
