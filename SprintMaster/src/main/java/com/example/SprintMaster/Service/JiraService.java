@@ -4,6 +4,7 @@ import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
@@ -17,6 +18,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
+import com.example.SprintMaster.Repository.JiraRepository;
+import com.example.SprintMaster.model.Jira;
 import com.example.SprintMaster.model.JiraDataModel;
 import com.kapturecrm.utilobj.CommonUtils;
 
@@ -28,6 +31,12 @@ public class JiraService {
 
 	@Autowired
 	RestTemplate restTemplate;
+
+	@Autowired
+	private JiraRepository jiraRepository;
+
+	@Autowired
+	private CacheService cacheService;
 
 	public ResponseEntity<?> getAllIssueBySprintName(String sprintName) {
 
@@ -44,7 +53,7 @@ public class JiraService {
 				HttpHeaders headers = new HttpHeaders();
 				headers.set("Content-Type", "application/json");
 				headers.setBasicAuth("darshanneo07@gmail.com",
-						"ATATT3xFfGF0QLsKyvng1uFfH7hFCgKR09Y9kX3GoLK4Edx6cAuyNyfbLoFBH6zvjvEQU_XNThDysn9sZ1jKrdDCNNR1r_cDkaf_Sv7SzOh9yqXVWTDz7Sorf9j5YXDFnqv7O_HJBganAMnGhymnGd8jzfKYnK5yD52-7rRID3ixd2k8T3uY170=28985837");
+						"ATATT3xFfGF0n1mHqa-E6uHNTLsG0mAJYs7h1AqYsC8iW7-BXR53T5wSl3zQQ3Pu0AVL4Gaj54FAfbpEu5Z5RAxDX-UZguH5wbTTyLdK6C_QcCOxOnAk_Zf2h0nLy5qPmv92WMH2Rk1_3-w6CSA39bulpJXAm63v3ElWBwYYUSyYN0LFalvfAyw=AFCD39E6");
 				HttpEntity<String> entity = new HttpEntity<>("", headers);
 
 				String responseStr = restTemplate.exchange(urlStr, HttpMethod.GET, entity, String.class).getBody();
@@ -65,6 +74,9 @@ public class JiraService {
 										jiraDataModel = setFromResponseAndReturn(eachIssue.toString());
 										dataList.add(jiraDataModel);
 									}
+								}
+								if (dataList != null && !dataList.isEmpty()) {
+									insertDataIntoJira(dataList);
 								}
 							}
 						}
@@ -218,6 +230,55 @@ public class JiraService {
 
 		}
 		return new ResponseEntity<>("Success", HttpStatus.CREATED);
+	}
+
+	private void insertDataIntoJira(ArrayList<JiraDataModel> list) {
+		ArrayList<Jira> newObjList = new ArrayList<>();
+		ArrayList<Jira> oldObjList = new ArrayList<>();
+
+		if (list != null && !list.isEmpty()) {
+			for (JiraDataModel obj : list) {
+				String jiraId = obj.getJiraId();
+				if (isNotNullAndNotEmpty(jiraId)) {
+					Jira jiraObj = jiraRepository.findByJiraId(jiraId);
+					if (jiraObj != null) {
+						jiraObj.setEmpId(cacheService.getEmployeeIdByName(obj.getEmployeeName()));
+						jiraObj.setModule(obj.getModule());
+						jiraObj.setPriority(obj.getPriority());
+						jiraObj.setSprint(obj.getSprint());
+						jiraObj.setStatus(obj.getStatus());
+						jiraObj.setStartTime(obj.getStartDate());
+						jiraObj.setEndTime(obj.getEndDate());
+						oldObjList.add(jiraObj);
+
+					} else {
+						Jira jira = new Jira();
+						jira.setCreateDate(getCurrentTimestamp());
+						jira.setEmpId(cacheService.getEmployeeIdByName(obj.getEmployeeName()));
+						jira.setJiraId(obj.getJiraId());
+						jira.setModule(obj.getModule());
+						jira.setPriority(obj.getPriority());
+						jira.setSprint(obj.getSprint());
+						jira.setStatus(obj.getStatus());
+						jira.setStartTime(obj.getStartDate());
+						jira.setEndTime(obj.getEndDate());
+						newObjList.add(jira);
+					}
+				}
+			}
+			if (!oldObjList.isEmpty()) {
+				jiraRepository.saveAll(oldObjList);
+			}
+			if (!newObjList.isEmpty()) {
+				jiraRepository.saveAll(newObjList);
+			}
+		}
+
+	}
+
+	public static Timestamp getCurrentTimestamp() {
+		Calendar calendar = Calendar.getInstance();
+		return new Timestamp(calendar.getTimeInMillis());
 	}
 
 }

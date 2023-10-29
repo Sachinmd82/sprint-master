@@ -22,6 +22,7 @@ public class AdminService {
 		List<Employee> list = employeeRepository.findAll();
 		if (list != null && list.size() > 0) {
 			cacheService.addAllAdminUsers(list);
+			cacheService.mapEmpIdToUserName(list);
 		}
 	}
 	
