@@ -45,4 +45,7 @@ public class Jira {
 	@Column(name="end_time")
 	private Timestamp endTime;
 	
+	@Column(name ="due_date")
+	private Timestamp dueDate;
+	
 }
