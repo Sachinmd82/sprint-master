@@ -22,16 +22,16 @@ import com.example.SprintMaster.model.Logger;
 
 @Service
 public class MasterService {
-	
+
 	@Autowired
 	JiraRepository jiraRepository;
-	
+
 	@Autowired
 	LoggerRepository loggerRepository;
-	
+
 	@Autowired
 	AdminService adminService;
-	
+
 	@Autowired
 	EmployeeRepository employeeRepository;
 
@@ -55,8 +55,8 @@ public class MasterService {
 		int pending = 0;
 		int inProgress = 0;
 		int complete = 0;
-		for(Jira jira : jiras) {
-			if(jira.getStatus().equals("Pending")) {
+		for (Jira jira : jiras) {
+			if (jira.getStatus().equals("Pending")) {
 				pending += 1;
 			} else if (jira.getStatus().equals("InProgress")) {
 				inProgress += 1;
@@ -64,7 +64,7 @@ public class MasterService {
 				complete += 1;
 			}
 		}
-		
+
 		Map<String, Integer> result = new LinkedHashMap<String, Integer>();
 		result.put("Pending", pending);
 		result.put("InProgress", inProgress);
@@ -77,20 +77,20 @@ public class MasterService {
 		String name = adminService.getUserName(authorizationHeader);
 		Employee employee = employeeRepository.findByName(name);
 		int empId = employee.getId();
-		List<Jira> jiras = jiraRepository.findByEmpIdAndStatus(empId,status);
-		for(Jira jira:jiras) {
+		List<Jira> jiras = jiraRepository.findByEmpIdAndStatus(empId, status);
+		for (Jira jira : jiras) {
 			Timestamp st = null;
 			Timestamp ed = null;
 			long duration = 0;
-			List<Logger>loggers = loggerRepository.findByJiraId(jira.getJiraId());
-			for(Logger logger : loggers) {
-				if(logger.getActivityName().equals("Pause")) {
-					st =logger.getTime();
-				} else if(logger.getActivityName().equals("start")&& st!=null) {
-					ed=logger.getTime();
+			List<Logger> loggers = loggerRepository.findByJiraId(jira.getJiraId());
+			for (Logger logger : loggers) {
+				if (logger.getActivityName().equals("Pause")) {
+					st = logger.getTime();
+				} else if (logger.getActivityName().equals("start") && st != null) {
+					ed = logger.getTime();
 				}
-				if(st!=null && ed!=null) {
-					duration+=ed.getTime()-st.getTime();
+				if (st != null && ed != null) {
+					duration += ed.getTime() - st.getTime();
 					st = null;
 					ed = null;
 				}
@@ -99,11 +99,11 @@ public class MasterService {
 			field.setBreakTaken(duration);
 			Timestamp jiraSt = jira.getStartTime();
 			Timestamp jiraEt = jira.getEndTime() != null ? jira.getEndTime() : SpringUtility.getCurrentTimestamp();
-			long diff = jiraEt.getTime() - jiraSt.getTime();
+			long diff = jiraSt != null && jiraEt != null ? jiraEt.getTime() - jiraSt.getTime() : 0;
 			field.setWorked(diff);
 			result.put(jira.getJiraId(), field);
 		}
-		return new ResponseEntity<>(result,HttpStatus.OK);
+		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 
 	public ResponseEntity<Map<String, Integer>> getAdminStatusWiseCount() {
@@ -111,8 +111,8 @@ public class MasterService {
 		int pending = 0;
 		int inProgress = 0;
 		int complete = 0;
-		for(Jira jira : jiras) {
-			if(jira.getStatus().equals("Pending")) {
+		for (Jira jira : jiras) {
+			if (jira.getStatus().equals("Pending")) {
 				pending += 1;
 			} else if (jira.getStatus().equals("InProgress")) {
 				inProgress += 1;
@@ -120,7 +120,7 @@ public class MasterService {
 				complete += 1;
 			}
 		}
-		
+
 		Map<String, Integer> result = new LinkedHashMap<String, Integer>();
 		result.put("Pending", pending);
 		result.put("InProgress", inProgress);
@@ -130,8 +130,8 @@ public class MasterService {
 
 	public ResponseEntity<?> getAdminWiseForStatus(String status) {
 		List<Jira> jiras = jiraRepository.findByStatus(status);
-		if(jiras!=null && jiras.size()>0) {
-			return new ResponseEntity<List<Jira>>(jiras,HttpStatus.OK);
+		if (jiras != null && jiras.size() > 0) {
+			return new ResponseEntity<List<Jira>>(jiras, HttpStatus.OK);
 		}
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
