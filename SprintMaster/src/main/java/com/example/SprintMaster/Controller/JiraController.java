@@ -21,8 +21,8 @@ public class JiraController {
 	}
 	
 	@PutMapping("/update-story-point")
-	private ResponseEntity<?> updateStoryPoint(@RequestParam String jiraId, @RequestParam int storyPoint){
-		return jiraService.updateStoryPoint(jiraId,storyPoint);
+	private ResponseEntity<?> updateStoryPoint(@RequestParam String jiraId, @RequestParam int storyPoint, @RequestParam String apiToken){
+		return jiraService.updateStoryPoint(jiraId,storyPoint, apiToken);
 	}
 
 }

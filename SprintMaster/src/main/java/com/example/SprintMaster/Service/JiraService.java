@@ -203,7 +203,7 @@ public class JiraService {
 		return false;
 	}
 
-	public ResponseEntity<?> updateStoryPoint(String jiraId, int storyPoint) {
+	public ResponseEntity<?> updateStoryPoint(String jiraId, int storyPoint, String apiToken) {
 		if (storyPoint > 0 && isNotNullAndNotEmpty(jiraId)) {
 			JSONObject outerObj = new JSONObject();
 
@@ -218,7 +218,7 @@ public class JiraService {
 
 			headers.set("Content-Type", "application/json");
 			headers.setBasicAuth("darshanneo07@gmail.com",
-					"ATATT3xFfGF0QLsKyvng1uFfH7hFCgKR09Y9kX3GoLK4Edx6cAuyNyfbLoFBH6zvjvEQU_XNThDysn9sZ1jKrdDCNNR1r_cDkaf_Sv7SzOh9yqXVWTDz7Sorf9j5YXDFnqv7O_HJBganAMnGhymnGd8jzfKYnK5yD52-7rRID3ixd2k8T3uY170=28985837");
+					apiToken);
 			HttpEntity<JSONObject> entity = new HttpEntity<>(outerObj, headers);
 
 			try {
