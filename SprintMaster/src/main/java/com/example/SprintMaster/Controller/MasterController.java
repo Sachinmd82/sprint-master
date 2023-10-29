@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -20,7 +21,7 @@ public class MasterController {
 	MasterService masterService;
 	
 	@PostMapping("/add-log")
-	public ResponseEntity<?> addLog(LogDto dto){
+	public ResponseEntity<?> addLog(@RequestBody LogDto dto){
 		Logger logger=masterService.addLog(dto);
 		return new ResponseEntity<>(logger,HttpStatus.OK);
 	}

@@ -37,14 +37,17 @@ public class MasterService {
 
 	public Logger addLog(LogDto dto) {
 		Jira jira = jiraRepository.findByJiraId(dto.getJiraId());
-		Logger logger = new Logger();
-		logger.setEmpId(jira.getEmpId());
-		logger.setActivityName(dto.getType());
-		logger.setJiraId(jira.getJiraId());
-		Timestamp timestamp = SpringUtility.getCurrentTimestamp();
-		logger.setTime(timestamp);
-		loggerRepository.save(logger);
-		return logger;
+		if (jira != null) {
+			Logger logger = new Logger();
+			logger.setEmpId(jira.getEmpId());
+			logger.setActivityName(dto.getType());
+			logger.setJiraId(jira.getJiraId());
+			Timestamp timestamp = SpringUtility.getCurrentTimestamp();
+			logger.setTime(timestamp);
+			loggerRepository.save(logger);
+			return logger;
+		}
+		return null;
 	}
 
 	public ResponseEntity<Map<String, Integer>> getStatusWiseCount(String authorizationHeader) {
@@ -86,7 +89,7 @@ public class MasterService {
 			for (Logger logger : loggers) {
 				if (logger.getActivityName().equals("Pause")) {
 					st = logger.getTime();
-				} else if (logger.getActivityName().equals("start") && st != null) {
+				} else if (logger.getActivityName().equals("Start") && st != null) {
 					ed = logger.getTime();
 				}
 				if (st != null && ed != null) {
