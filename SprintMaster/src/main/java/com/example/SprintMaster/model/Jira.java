@@ -15,7 +15,7 @@ import lombok.Data;
 public class Jira {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int id;
 	
 	@Column(name="jira_id")
