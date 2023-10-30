@@ -178,6 +178,7 @@ public class MasterService {
 			long diff = jiraSt != null && jiraEt != null ? jiraEt.getTime() - jiraSt.getTime() : 0;
 			field.setWorkVal(diff + field.getWorkVal());
 		}
+		setValues(result);
 		List<Employee> emps = employeeRepository.findAll();
 		if(emps!=null) {
 			for (Employee emp : emps) {
@@ -187,6 +188,17 @@ public class MasterService {
 		efficiencyResult.setEmpIdToVal(result);
 		efficiencyResult.setEmpToName(empToName);
 		return new ResponseEntity<>(efficiencyResult, HttpStatus.OK);
+	}
+
+	private void setValues(Map<Integer, Field> result) {
+		if (result != null) {
+			for (int empId : result.keySet()) {
+				Field fld = result.get(empId);
+				fld.setBreakTaken(SpringUtility.getDateInHHMMSS(fld.getBreakVal()));
+				fld.setWorked(SpringUtility.getDateInHHMMSS(fld.getWorkVal()));
+			}
+
+		}
 	}
 	
 }
