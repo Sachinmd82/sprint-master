@@ -102,11 +102,11 @@ public class MasterService {
 				}
 			}
 			Field field = new Field();
-			field.setBreakTaken(duration);
+			field.setBreakTaken(SpringUtility.getDateInHHMMSS(duration));
 			Timestamp jiraSt = jira.getStartTime();
 			Timestamp jiraEt = jira.getEndTime() != null ? jira.getEndTime() : SpringUtility.getCurrentTimestamp();
 			long diff = jiraSt != null && jiraEt != null ? jiraEt.getTime() - jiraSt.getTime() : 0;
-			field.setWorked(diff);
+			field.setWorked(SpringUtility.getDateInHHMMSS(diff));
 			result.put(jira.getJiraId(), field);
 		}
 		return new ResponseEntity<>(result, HttpStatus.OK);

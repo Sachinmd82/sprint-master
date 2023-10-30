@@ -4,8 +4,8 @@ import lombok.Data;
 
 @Data
 public class Field {
-	public long worked;
-	public long breakTaken;
+	public String worked;
+	public String breakTaken;
 	public String slaStatus;
 
 }
