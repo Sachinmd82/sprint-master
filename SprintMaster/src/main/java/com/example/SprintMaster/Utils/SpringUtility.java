@@ -24,4 +24,18 @@ public class SpringUtility {
 	public static final String BREAK_START		="Break-Start";
 	public static final String BREAK_END 		="Break-End";
 	public static final String DONE 			="Done";
+	
+	public static String getDateInHHMMSS(long milliseconds) {
+		if (milliseconds > 0) {
+			int seconds = (int) (milliseconds / 1000) % 60;
+			int minutes = (int) ((milliseconds / (1000 * 60)) % 60);
+			int hours = (int) (milliseconds / (1000 * 60 * 60));
+			if(hours < 100) {
+				return String.format("%02d:%02d:%02d", hours, minutes, seconds);
+			}
+			return String.format("%d:%02d:%02d", hours, minutes, seconds);
+		} else {
+			return "00:00:00";
+		}
+	}
 }
