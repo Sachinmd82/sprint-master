@@ -103,7 +103,7 @@ public class MasterService {
 			}
 			Field field = new Field();
 			field.setBreakTaken(SpringUtility.getDateInHHMMSS(duration));
-			Timestamp jiraSt = jira.getStartTime();
+			Timestamp jiraSt = jira.getCreateDate();
 			Timestamp jiraEt = jira.getEndTime() != null ? jira.getEndTime() : SpringUtility.getCurrentTimestamp();
 			long diff = jiraSt != null && jiraEt != null ? jiraEt.getTime() - jiraSt.getTime() : 0;
 			field.setWorked(SpringUtility.getDateInHHMMSS(diff));
