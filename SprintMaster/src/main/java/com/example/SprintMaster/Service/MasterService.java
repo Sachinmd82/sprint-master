@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.example.SprintMaster.Dto.EmpEfficiencyResult;
 import com.example.SprintMaster.Dto.Field;
 import com.example.SprintMaster.Dto.LogDto;
 import com.example.SprintMaster.Repository.EmployeeRepository;
@@ -144,8 +145,10 @@ public class MasterService {
 	}
 	
 	public ResponseEntity<?> getAllEmpDataForAdmin(){
+		EmpEfficiencyResult efficiencyResult = new EmpEfficiencyResult(); 
 		List<Jira> jiras = jiraRepository.findAll();
 		Map<Integer,Field> result = new HashMap<>();
+		Map<Integer, String> empToName = new HashMap<Integer, String>();
 		for (Jira jira : jiras) {
 			Timestamp st = null;
 			Timestamp ed = null;
@@ -169,13 +172,21 @@ public class MasterService {
 				field = new Field();
 				result.put(jira.getEmpId(), field);
 			}
-			field.setBreakTaken(duration + field.getBreakTaken());
-			Timestamp jiraSt = jira.getStartTime();
+			field.setBreakVal(duration + field.getBreakVal());
+			Timestamp jiraSt = jira.getCreateDate();
 			Timestamp jiraEt = jira.getEndTime() != null ? jira.getEndTime() : SpringUtility.getCurrentTimestamp();
 			long diff = jiraSt != null && jiraEt != null ? jiraEt.getTime() - jiraSt.getTime() : 0;
-			field.setWorked(diff + field.getWorked());
+			field.setWorkVal(diff + field.getWorkVal());
 		}
-		return new ResponseEntity<>(result, HttpStatus.OK);
+		List<Employee> emps = employeeRepository.findAll();
+		if(emps!=null) {
+			for (Employee emp : emps) {
+				empToName.put(emp.getId(), emp.getName());
+			}
+		}
+		efficiencyResult.setEmpIdToVal(result);
+		efficiencyResult.setEmpToName(empToName);
+		return new ResponseEntity<>(efficiencyResult, HttpStatus.OK);
 	}
 	
 }
