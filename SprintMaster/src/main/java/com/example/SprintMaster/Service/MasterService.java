@@ -107,6 +107,7 @@ public class MasterService {
 			Timestamp jiraEt = jira.getEndTime() != null ? jira.getEndTime() : SpringUtility.getCurrentTimestamp();
 			long diff = jiraSt != null && jiraEt != null ? jiraEt.getTime() - jiraSt.getTime() : 0;
 			field.setWorked(SpringUtility.getDateInHHMMSS(diff));
+			field.setSlaStatus("Within Duedate");
 			result.put(jira.getJiraId(), field);
 		}
 		return new ResponseEntity<>(result, HttpStatus.OK);
