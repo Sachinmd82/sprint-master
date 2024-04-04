@@ -27,7 +27,7 @@ public class SpringUtility {
 	
 	public static String getDateInHHMMSS(long milliseconds) {
 		if (milliseconds > 0) {
-			int seconds = (int) (milliseconds / 1000) % 60;
+			int seconds =  (int) (milliseconds / 1000) % 60;
 			int minutes = (int) ((milliseconds / (1000 * 60)) % 60);
 			int hours = (int) (milliseconds / (1000 * 60 * 60));
 			if(hours < 100) {
