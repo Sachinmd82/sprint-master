@@ -4,12 +4,14 @@ public class UserDto {
     private String displayName;
     private String avatarHref;
     private String workspaceName;
+    private String accountId;
 
-    // Constructor, getters, and setters
-    public UserDto(String displayName, String avatarHref, String workspaceName) {
+
+    public UserDto(String displayName, String avatarHref, String workspaceName, String accountId) {
         this.displayName = displayName;
         this.avatarHref = avatarHref;
         this.workspaceName = workspaceName;
+        this.accountId = accountId;
     }
 
     public String getDisplayName() {
@@ -34,5 +36,13 @@ public class UserDto {
 
     public void setWorkspaceName(String workspaceName) {
         this.workspaceName = workspaceName;
+    }
+
+    public String getAccountId() {
+        return accountId;
+    }
+
+    public void setAccountId(String accountId) {
+        this.accountId = accountId;
     }
 }
