@@ -26,4 +26,11 @@ public class BitbucketService {
 		Map<String, UserDto> val=bitbucketUtil.getUsers(accessToken);
 		return new ResponseEntity<>(val, HttpStatus.OK);
 	}
+
+    public ResponseEntity<?> getAllPullRequests() {
+        String accessToken =  bitbucketUtil.getRefreshToken();
+        Map<String, UserDto> val=bitbucketUtil.getUsers(accessToken);
+        return new ResponseEntity<>(val, HttpStatus.OK);
+    }
+
 }
