@@ -19,4 +19,9 @@ public class BitbucketController {
     private ResponseEntity<?> getAccessToken() {
         return bitbucketService.getAccessToken();
     }
+    
+    @GetMapping("/get-all-users")
+    private ResponseEntity<?> getAllUsers() {
+    	return bitbucketService.getAllUsers();    	
+    }
 }
