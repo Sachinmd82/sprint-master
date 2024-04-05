@@ -21,6 +21,7 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import com.example.SprintMaster.Dto.UserDto;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -390,6 +391,33 @@ public class BitbucketUtil {
             return count +"";
         }
         
+		return null;
+	}
+
+	public String getAllCommitsforUser(String accessToken, String empCode) {
+		String apiUrl = "https://api.bitbucket.org/2.0/pullrequests/" + empCode;
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.set("Authorization", "Bearer " + accessToken);
+		headers.set("Accept", "application/json");
+
+		HttpEntity<String> requestEntity = new HttpEntity<>(headers);
+		RestTemplate restTemplate = new RestTemplate();
+		ResponseEntity<String> response = restTemplate.exchange(apiUrl, HttpMethod.GET, requestEntity, String.class);
+
+		if (response != null) {
+			ObjectMapper mapper = new ObjectMapper();
+			String res = response.getBody();
+			JsonNode root;
+			try {
+				root = mapper.readTree(res);
+				String count = root.get("size").asText();
+				return count;
+			} catch (JsonProcessingException e) {
+				e.printStackTrace();
+			}
+
+		}
 		return null;
 	}
 }
