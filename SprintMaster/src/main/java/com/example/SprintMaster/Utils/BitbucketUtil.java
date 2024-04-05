@@ -358,4 +358,38 @@ public class BitbucketUtil {
         }
         return responseObject;
     }
+
+	public String getAllLinesForCommit(String commitId, String accessToken) {
+		String apiUrl = "https://api.bitbucket.org/2.0/repositories/kap-hack/kap-hack-repo/diff/" + commitId;
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + accessToken);
+        headers.set("Accept", "application/json");
+        
+        HttpEntity<String> requestEntity = new HttpEntity<>(headers);
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<String> response = restTemplate.exchange(apiUrl, HttpMethod.GET, requestEntity, String.class);
+        
+        if(response!= null) {
+        	String body = response.getBody();
+        	int count = 0;
+//            boolean consecutive = false;
+            boolean previousWasPlus = false;
+            for (char c : body.toCharArray()) {
+            	if (c == ' ' && previousWasPlus) {
+                    count++;
+                    previousWasPlus = false;
+                } else if (c == '+') {
+                    if (!previousWasPlus) {
+                        previousWasPlus = true;
+                    }
+                } else {
+                    previousWasPlus = false;
+                }
+            }
+            return count +"";
+        }
+        
+		return null;
+	}
 }

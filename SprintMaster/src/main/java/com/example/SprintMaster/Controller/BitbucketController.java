@@ -43,6 +43,12 @@ public class BitbucketController {
     private ResponseEntity<?> getAllCommits(){
         return bitbucketService.getAllCommits();
     }
+    
+    @GetMapping("/get-lines-for-commit")
+    private ResponseEntity<?> getCommitLines(@RequestParam String commitId) {
+    	return bitbucketService.getAllLinesForCommit(commitId);
+    }
+    
 
 
 }
