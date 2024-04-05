@@ -317,12 +317,14 @@ public class BitbucketUtil {
                     String createdDate = "";
                     for (JsonNode valueNode : valuesNode) {
                          createdDate = valueNode.get("date").asText("");
+                        String commitId = valueNode.get("hash").asText("");
                         author = valueNode.get("author").get("raw").asText("");
                         String message = valueNode.get("message").asText("");
                         String commitLink = valueNode.get("links").get("html").get("href").asText("");
 
-                        CommitHistory data = new CommitHistory(author, createdDate, commitLink);
+                        CommitHistory data = new CommitHistory(commitId, author, createdDate, commitLink);
                         commitList.add(data);
+                        indResponse.put("commitId",commitId);
                         indResponse.put("createDate", createdDate);
                         indResponse.put("author", author);
                         indResponse.put("message", message);
@@ -336,11 +338,17 @@ public class BitbucketUtil {
                         responseObject.put("userNameToCommitsCountMap", userNameCountMap);
                         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
                         List<String> dateList = commitList.stream().map(CommitHistory::getCreatedDate).collect(Collectors.toList());
-                        // Group date strings by date (ignoring time)
                         Map<LocalDate, Long> entriesPerDay = dateList.stream()
                                 .map(s -> LocalDate.parse(s.substring(0, 10), formatter))
                                 .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
                         responseObject.put("commitsPerDay", entriesPerDay.toString());
+
+                        Map<String, List<String>> commitsByUser = commitList.stream()
+                                .collect(Collectors.groupingBy(CommitHistory::getAuthor,
+                                        Collectors.mapping(CommitHistory::getCommitId, Collectors.toList())));
+
+                        responseObject.put("userIdToCommitIdMap", commitsByUser);
+
 
                     }
                 }
