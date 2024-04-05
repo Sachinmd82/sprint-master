@@ -57,4 +57,9 @@ public class BitbucketService {
 		String lines = bitbucketUtil.getAllLinesForCommit(commitId, accessToken);
 		return new ResponseEntity<>(lines, HttpStatus.OK);
 	}
+    public ResponseEntity<?> getDeploymentFreq() {
+        String accessToken = bitbucketUtil.getRefreshToken();
+        JSONObject val = bitbucketUtil.getDeploymentFrequency(accessToken);
+        return new ResponseEntity<>(val, HttpStatus.OK);
+    }
 }
