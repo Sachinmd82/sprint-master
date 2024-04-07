@@ -8,6 +8,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import com.example.SprintMaster.Dto.CommitHistory;
+import com.example.SprintMaster.Dto.DeveloperEffDto;
 import com.example.SprintMaster.Dto.PRDataDto;
 import net.sf.json.JSONArray;
 import org.springframework.http.HttpEntity;
@@ -141,6 +142,7 @@ public class BitbucketUtil {
                     String author = "";
                     String prLink = "";
                     String destinationBranch = "";
+                    ArrayList<DeveloperEffDto> developEffList = new ArrayList<>();
                     for (JsonNode valueNode : valuesNode) {
 
                         int prId = valueNode.get("id").asInt();
@@ -187,6 +189,21 @@ public class BitbucketUtil {
                         indResponse.put("destinationBranch", destinationBranch);
                         indResponse.put("prLink", prLink);
                         responseObject.add(indResponse);
+
+                        DeveloperEffDto developerEffDto = new DeveloperEffDto(prId, status, createdDate, lastUpdatedDate, author, sourceBranch, destinationBranch);
+                        developEffList.add(developerEffDto);
+                    }
+                    if(!developEffList.isEmpty()){
+                        Map<String, Map<String, List<DeveloperEffDto>>> commitsByBranches = developEffList.stream()
+                                .collect(Collectors.groupingBy(DeveloperEffDto::getSourceBranch,
+                                        Collectors.groupingBy(DeveloperEffDto::getDestinationBranch)));
+
+                        commitsByBranches.keySet().forEach(System.out::println);
+                        System.out.println(commitsByBranches.toString());
+
+
+
+
                     }
                 }
             } catch (IOException e) {
@@ -218,6 +235,7 @@ public class BitbucketUtil {
                 if (valuesNode != null && valuesNode.isArray()) {
                     String author = "";
 					String createdDate = "";
+                    String initialCommitDate ="";
                     for (JsonNode valueNode : valuesNode) {
                         String branchName = valueNode.get("name").asText();
 						JsonNode targetNode = valueNode.get("target");
@@ -230,7 +248,24 @@ public class BitbucketUtil {
 						}
                         indResponse.put("branchName", branchName);
                         indResponse.put("lastCommittedDate", createdDate);
+                        try {
+                            String apiUrl2 = "https://api.bitbucket.org/2.0/repositories/kap-hack/kap-hack-repo/commits/?include=SA-123";
+                            ResponseEntity<String> response2 = restTemplate.exchange(apiUrl2, HttpMethod.GET, requestEntity, String.class);
+                            if(response2 != null){
+                                String res2 = response2.getBody();
+                                JsonNode root2 = mapper.readTree(res2);
+                                JsonNode valuesNode2 = root2.get("values");
+                                for (JsonNode value : valuesNode2) {
+                                    initialCommitDate  = value.get("date").asText();
+
+                                }
+                            }
+
+                        }catch (Exception e){
+                            e.printStackTrace();
+                        }
                         indResponse.put("author", author);
+                        indResponse.put("firstCommittedDate",initialCommitDate);
                         responseObject.add(indResponse);
                     }
                 }
