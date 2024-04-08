@@ -200,10 +200,6 @@ public class BitbucketUtil {
 
                         commitsByBranches.keySet().forEach(System.out::println);
                         System.out.println(commitsByBranches.toString());
-
-
-
-
                     }
                 }
             } catch (IOException e) {
@@ -382,6 +378,27 @@ public class BitbucketUtil {
                         Map<String, List<String>> commitsByUser = commitList.stream()
                                 .collect(Collectors.groupingBy(CommitHistory::getAuthor,
                                         Collectors.mapping(CommitHistory::getCommitId, Collectors.toList())));
+
+
+                        if(commitsByUser.containsKey("darshan k poojary <darshanneo07@gmail.com>")&&commitsByUser.containsKey("Darshan K Poojary <darshan.poojary@kapturecrm.com>")){
+
+                            List<String> combinedList = new ArrayList<>();
+                            combinedList.addAll(commitsByUser.get("darshan k poojary <darshanneo07@gmail.com>"));
+                            combinedList.addAll(commitsByUser.get("Darshan K Poojary <darshan.poojary@kapturecrm.com>"));
+                            commitsByUser.put("darshan k poojary <darshanneo07@gmail.com>",combinedList );
+                            commitsByUser.remove("Darshan K Poojary <darshan.poojary@kapturecrm.com>");
+                        }
+                        if(commitsByUser.containsKey("Karthik P <karthik.p@kapturecrm.com>") && commitsByUser.containsKey("karthikp <karthik.p@kapturecrm.com>")&& commitsByUser.containsKey("Karthik <karthik@Kaps-MacBook-Pro.local>")){
+                            List<String> combinedList = new ArrayList<>();
+                            combinedList.addAll(commitsByUser.get("Karthik P <karthik.p@kapturecrm.com>"));
+                            combinedList.addAll(commitsByUser.get("karthikp <karthik.p@kapturecrm.com>"));
+                            combinedList.addAll(commitsByUser.get("Karthik <karthik@Kaps-MacBook-Pro.local>"));
+
+                            commitsByUser.put("Karthik P <karthik.p@kapturecrm.com>",combinedList );
+                            commitsByUser.remove("karthikp <karthik.p@kapturecrm.com>");
+                            commitsByUser.remove("Karthik <karthik@Kaps-MacBook-Pro.local>");
+
+                        }
 
                         responseObject.put("userIdToCommitIdMap", commitsByUser);
 
