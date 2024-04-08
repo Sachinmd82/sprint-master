@@ -425,6 +425,9 @@ public class BitbucketUtil {
         
         if(response!= null) {
         	String body = response.getBody();
+            if(body == null || body.isEmpty()){
+                return 0+"";
+            }
         	int count = 0;
 //            boolean consecutive = false;
             boolean previousWasPlus = false;
