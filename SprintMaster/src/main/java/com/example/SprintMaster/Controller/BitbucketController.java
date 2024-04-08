@@ -49,10 +49,10 @@ public class BitbucketController {
     	return bitbucketService.getAllLinesForCommit(commitId);
     }
     
-    @GetMapping("/get_emp-effieciency")
-    private ResponseEntity<?> getEmpEfficiency(@RequestParam String empCode){
-    	return bitbucketService.getEmpEfficiency(empCode);
-    }
+//    @GetMapping("/get_emp-effieciency")
+//    private ResponseEntity<?> getEmpEfficiency(@RequestParam String empCode){
+//    	return bitbucketService.getEmpEfficiency(empCode);
+//    }
 
 
 }
