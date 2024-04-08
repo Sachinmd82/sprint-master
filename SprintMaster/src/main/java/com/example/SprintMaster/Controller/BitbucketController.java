@@ -48,6 +48,13 @@ public class BitbucketController {
     private ResponseEntity<?> getCommitLines(@RequestParam String commitId) {
     	return bitbucketService.getAllLinesForCommit(commitId);
     }
+
+    @GetMapping("/get-deployment-freq")
+    private ResponseEntity<?> getDeploymentFreq() {
+        return bitbucketService.getDeploymentFreq();
+    }
+
+
     
 //    @GetMapping("/get_emp-effieciency")
 //    private ResponseEntity<?> getEmpEfficiency(@RequestParam String empCode){
