@@ -8,6 +8,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import com.example.SprintMaster.Dto.CommitHistory;
+import com.example.SprintMaster.Dto.PRDataDto;
 import net.sf.json.JSONArray;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -21,7 +22,6 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import com.example.SprintMaster.Dto.UserDto;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -120,7 +120,7 @@ public class BitbucketUtil {
     public JSONArray getAllPullRequest(String accessToken) {
         JSONArray responseObject = new JSONArray();
         JSONObject indResponse = new JSONObject();
-        String apiUrl = "https://api.bitbucket.org/2.0/repositories/kap-hack/kap-hack-repo/pullrequests";
+        String apiUrl = "https://api.bitbucket.org/2.0/repositories/kap-hack/kap-hack-repo/pullrequests?state=ALL";
 
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + accessToken);
@@ -366,7 +366,7 @@ public class BitbucketUtil {
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + accessToken);
         headers.set("Accept", "application/json");
-        
+
         HttpEntity<String> requestEntity = new HttpEntity<>(headers);
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<String> response = restTemplate.exchange(apiUrl, HttpMethod.GET, requestEntity, String.class);
@@ -393,31 +393,87 @@ public class BitbucketUtil {
         
 		return null;
 	}
+    public JSONObject getDeploymentFrequency(String accessToken) {
 
-	public String getAllCommitsforUser(String accessToken, String empCode) {
-		String apiUrl = "https://api.bitbucket.org/2.0/pullrequests/" + empCode;
 
-		HttpHeaders headers = new HttpHeaders();
-		headers.set("Authorization", "Bearer " + accessToken);
-		headers.set("Accept", "application/json");
+        JSONObject responseObject = new JSONObject();
+        String apiUrl = "https://api.bitbucket.org/2.0/repositories/kap-hack/kap-hack-repo/pullrequests?state=ALL";
 
-		HttpEntity<String> requestEntity = new HttpEntity<>(headers);
-		RestTemplate restTemplate = new RestTemplate();
-		ResponseEntity<String> response = restTemplate.exchange(apiUrl, HttpMethod.GET, requestEntity, String.class);
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + accessToken);
+        headers.set("Accept", "application/json");
 
-		if (response != null) {
-			ObjectMapper mapper = new ObjectMapper();
-			String res = response.getBody();
-			JsonNode root;
-			try {
-				root = mapper.readTree(res);
-				String count = root.get("size").asText();
-				return count;
-			} catch (JsonProcessingException e) {
-				e.printStackTrace();
-			}
 
-		}
-		return null;
-	}
+        HttpEntity<String> requestEntity = new HttpEntity<>(headers);
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<String> response = restTemplate.exchange(apiUrl, HttpMethod.GET, requestEntity, String.class);
+
+        if (response != null) {
+            ObjectMapper mapper = new ObjectMapper();
+            try {
+                String res = response.getBody();
+                JsonNode root = mapper.readTree(res);
+                JsonNode valuesNode = root.get("values");
+                List<PRDataDto> dataList = new ArrayList<>();
+                if (valuesNode != null && valuesNode.isArray()) {
+                    String author = "";
+                    String sourceBranch = "";
+                    String destinationBranch = "";
+
+                    for (JsonNode valueNode : valuesNode) {
+
+                        String status = valueNode.get("state").asText();
+                        String createdDate = valueNode.get("created_on").asText();
+                        String lastUpdatedDate = valueNode.get("updated_on").asText();
+                        JsonNode authorNode = valueNode.get("author");
+                        if (authorNode != null) {
+                            author = authorNode.get("display_name").asText();
+                        }
+                        JsonNode destinationNode = valueNode.get("destination");
+                        if (destinationNode != null) {
+                            JsonNode branchNode = destinationNode.get("branch");
+                            if (branchNode != null) {
+                                destinationBranch = branchNode.get("name").asText();
+                            }
+                        }
+
+                        JsonNode sourceNode = valueNode.get("source");
+                        if (sourceNode != null) {
+                            JsonNode branchNode = sourceNode.get("branch");
+                            if (branchNode != null) {
+                                sourceBranch = branchNode.get("name").asText();
+                            }
+                        }
+
+                        PRDataDto data = new PRDataDto(status,createdDate,lastUpdatedDate,author,sourceBranch,destinationBranch);
+                        dataList.add(data);
+
+                    }
+                    HashMap<String, Integer> dataMap = new HashMap<>();
+                    if(!dataList.isEmpty()){
+                        for(PRDataDto data : dataList){
+                            if("MERGED".equalsIgnoreCase(data.getStatus()) && "main".equalsIgnoreCase(data.getDestinationBranch())){
+
+                               String date =  data.getUpdatedDate().substring(0,10);
+                               String authorName =  data.getAuthor();
+
+                                if(dataMap.containsKey(date)){
+                                 int count =    dataMap.get(date)+1;
+                                    dataMap.put(date,count);
+                                }else{
+                                    dataMap.put(date,1);
+                                }
+
+
+                            }
+                        }
+                        responseObject.put("dateToMergeCountMap",dataMap);
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return responseObject;
+    }
 }

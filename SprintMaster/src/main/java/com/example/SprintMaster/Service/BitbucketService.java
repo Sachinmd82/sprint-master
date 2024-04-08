@@ -57,13 +57,9 @@ public class BitbucketService {
 		String lines = bitbucketUtil.getAllLinesForCommit(commitId, accessToken);
 		return new ResponseEntity<>(lines, HttpStatus.OK);
 	}
-
-	public ResponseEntity<?> getEmpEfficiency(String empCode) {
-		String accessToken = bitbucketUtil.getRefreshToken();
-		//get All commits for user
-		String totalCommits = bitbucketUtil.getAllCommitsforUser(accessToken,empCode);
-		//get All Pull reg for user
-		
-		return null;
-	}
+    public ResponseEntity<?> getDeploymentFreq() {
+        String accessToken = bitbucketUtil.getRefreshToken();
+        JSONObject val = bitbucketUtil.getDeploymentFrequency(accessToken);
+        return new ResponseEntity<>(val, HttpStatus.OK);
+    }
 }
